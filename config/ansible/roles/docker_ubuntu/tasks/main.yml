@@ -1,0 +1,47 @@
+---
+- name: Wait for instance to be up after the reboot
+  local_action: wait_for
+  args:
+    host: "{{ inventory_hostname }}"
+    port: 22
+    state: started
+    delay: 5
+    timeout: 300
+  become: false
+
+- name: Install prerequisite packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+
+- name: Add Docker's official GPG key
+  apt_key:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+    state: present
+
+- name: Add Docker's repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Install Docker CE
+  apt:
+    name: docker-ce=17.06*
+    update_cache: yes
+
+- name: Add user to Docker group
+  raw: sudo usermod -a -G docker ubuntu
+
+- name: Enable Docker at startup
+  raw: sudo systemctl enable docker
+
+- name: Install Docker Compose 1.13.0
+  raw: "curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose"
+
+- name: Add exec permission to Docker Compose executable
+  raw: sudo chmod +x /usr/local/bin/docker-compose

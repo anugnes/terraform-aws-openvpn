@@ -1,0 +1,30 @@
+---
+- name: Install OpenVPN on EC2 Ubuntu instance
+  hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  gather_facts: no
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  pre_tasks:
+
+    - name: Wait for instance to be built
+      local_action: wait_for
+      args:
+        host: "{{ inventory_hostname }}"
+        port: 22
+        state: started
+        delay: 10
+        timeout: 300
+      become: false
+
+    - name: Gathering facts
+      setup:
+
+  roles:
+    - update_os
+    - docker_ubuntu
+    - mount_ebs_volume
+    - openvpn

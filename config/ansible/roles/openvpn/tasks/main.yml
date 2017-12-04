@@ -1,0 +1,9 @@
+---
+- name: Upload OpenVPN Docker Compose file
+  become: false
+  copy:
+    src: ../templates/docker-compose.yml
+    dest: /home/ubuntu/
+
+- name: Start OpenVPN Server
+  command: docker-compose up -d openvpn

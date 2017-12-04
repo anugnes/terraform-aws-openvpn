@@ -1,0 +1,29 @@
+---
+- name: Check the file system
+  raw: sudo file -s /dev/xvdh
+  register: fs_type
+
+- debug: msg="{{ fs_type.stdout }}"
+
+- name: Format partition to ext4 if not already formatted
+  raw: sudo mkfs -t ext4 /dev/xvdh
+  when: "'data' in fs_type.stdout and 'ext4' not in fs_type.stdout"
+
+- name: Read fstab file
+  raw: cat /etc/fstab
+  register: fstab
+
+- debug: msg="{{ fstab.stdout }}"
+
+- name: Add entry in fstab
+  when: "'xvdh' not in fstab.stdout"
+  raw: echo "/dev/xvdh /data ext4 defaults,nofail 0 2" >> /etc/fstab
+
+- name: Create mount point
+  command: mkdir /data
+  args:
+    creates: /data
+
+- name: Mount volume
+  raw: mount /dev/xvdh /data
+  ignore_errors: true
