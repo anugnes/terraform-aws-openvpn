@@ -85,7 +85,7 @@ resource "aws_volume_attachment" "ebs_att" {
   volume_id   = "${aws_ebs_volume.openvpn_data.id}"
 
   provisioner "local-exec" {
-    command = "ansible-playbook --private-key ~/.ssh/id_rsa.pub -i '${aws_instance.openvpn.public_ip},' ~/ansible/openvpn.yml"
+    command = "ansible-playbook --private-key ~/.ssh/id_rsa.pub -i '${aws_instance.openvpn.public_ip},' config/ansible/openvpn.yml"
   }
 }
 
