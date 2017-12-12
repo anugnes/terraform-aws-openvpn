@@ -38,3 +38,7 @@ variable "ebs_region" {
 variable "ebs_size" {
   description = "EBS volume size. 1GB should be fine in most cases"
 }
+
+variable "ami" {
+  description = "AMI ID to use for the EC2 instance"
+}

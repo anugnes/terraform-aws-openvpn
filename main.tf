@@ -1,14 +1,14 @@
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
-    values = ["paravirtual"]
-  }
-
-  owners = ["099720109477"]
-}
+//data "aws_ami" "ubuntu" {
+//  most_recent = true
+//
+//  filter {
+//    name   = "name"
+//    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+//    values = ["paravirtual"]
+//  }
+//
+//  owners = ["099720109477"]
+//}
 
 resource "aws_security_group" "openvpn" {
   name        = "${var.name}"
@@ -67,7 +67,7 @@ resource "aws_ebs_volume" "openvpn_data" {
 }
 
 resource "aws_instance" "openvpn" {
-  ami           = "${data.aws_ami.ubuntu.id}"
+  ami           = "${var.ami}"
   instance_type = "${var.instance_type}"
   key_name      = "${var.key_name}"
   subnet_id     = "${element(split(",", var.public_subnet_ids), count.index)}"
