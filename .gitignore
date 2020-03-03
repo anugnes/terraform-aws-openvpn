@@ -5,4 +5,8 @@
 # Module directory
 .terraform/
 
+# Terraform variable file
+*.tfvars
+
+# Pycharm
 .idea
